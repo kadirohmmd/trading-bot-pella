@@ -38,8 +38,15 @@ async function binanceRequest(endpoint, params = {}, method = 'GET') {
   const ts = Date.now();
   const qp = new URLSearchParams({ ...params, timestamp: ts });
   qp.append('signature', hmacSha256(API_SECRET, qp.toString()));
-  const url = `${BASE_URL}${endpoint}?${qp.toString()}`;
-  const resp = await fetch(url, { method, headers: { 'X-MBX-APIKEY': API_KEY, 'Content-Type': 'application/json' } });
+  const targetUrl = `${BASE_URL}${endpoint}?${qp.toString()}`;
+  
+  // استخدام وكيل لتغيير عنوان IP الصادر
+  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+  
+  const resp = await fetch(proxyUrl, {
+    method,
+    headers: { 'X-MBX-APIKEY': API_KEY, 'Content-Type': 'application/json' }
+  });
   if (!resp.ok) { const text = await resp.text(); throw new Error(`Binance API ${resp.status}: ${text}`); }
   return resp.json();
 }
