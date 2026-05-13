@@ -40,8 +40,8 @@ async function binanceRequest(endpoint, params = {}, method = 'GET') {
   qp.append('signature', hmacSha256(API_SECRET, qp.toString()));
   const targetUrl = `${BASE_URL}${endpoint}?${qp.toString()}`;
   
-  // استخدام وكيل لتغيير عنوان IP الصادر
-  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+  // استخدام وكيل AllOrigins (مجاني ولا يمنع طلبات الخادم)
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
   
   const resp = await fetch(proxyUrl, {
     method,
